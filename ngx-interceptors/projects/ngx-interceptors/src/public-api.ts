@@ -2,5 +2,5 @@
  * Public API Surface of ngx-interceptors
  */
 
-export * from './lib/ngx-interceptors.service';
-export * from './lib/ngx-interceptors.component';
+export * from './lib/logging/logging.interceptor';
+export * from './lib/logging/logging.config';
