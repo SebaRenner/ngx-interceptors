@@ -5,7 +5,7 @@ export interface LoggingInterceptorConfig {
 }
 
 export const defaultConfig: LoggingInterceptorConfig = {
-  color: 'orange'
+  color: 'black'
 }
 
 export const LOGGING_INTERCEPTOR_CONFIG = new InjectionToken<LoggingInterceptorConfig>('logging.config');
