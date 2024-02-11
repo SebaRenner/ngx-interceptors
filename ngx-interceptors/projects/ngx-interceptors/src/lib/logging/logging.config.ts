@@ -4,7 +4,7 @@ export interface LoggingInterceptorConfig {
   color: string;
 }
 
-export const defaultConfig: LoggingInterceptorConfig = {
+export const defaultLoggingConfig: LoggingInterceptorConfig = {
   color: 'black'
 }
 
