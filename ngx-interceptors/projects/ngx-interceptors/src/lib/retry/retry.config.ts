@@ -1,5 +1,8 @@
 import { InjectionToken } from "@angular/core";
 
+// additional config options:
+// - backoff strategy instead of fixed delay
+// - only retry on set of Errors/ErrorCodes
 export interface RetryInterceptorConfig {
   retries: number;
   delay: number;
