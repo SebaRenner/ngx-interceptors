@@ -1,6 +1,11 @@
 # ngx-interceptors
 Common HTTP Interceptors for Angular Applications. Available as HTTP Inteceptor class or function.
 
+## Interceptors
+- [HeaderInterceptor](/ngx-interceptors/projects/ngx-interceptors/src/lib/header/)
+- [LoggingInterceptr](/ngx-interceptors/projects/ngx-interceptors/src/lib/logging/)
+- [RetryInterceptor](/ngx-interceptors/projects/ngx-interceptors/src/lib/retry/)
+
 ## Usage
 Adding one or multiple interceptors to your application is done by registering them as providers. Either in your module class or for standalone projects in the bootstrap application function.
 
