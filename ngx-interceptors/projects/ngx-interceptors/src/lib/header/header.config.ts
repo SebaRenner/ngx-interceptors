@@ -4,13 +4,15 @@ export type HttpHeader = {
   [name: string]: string | string[];
 }
 
-// Could be extended with dynamic headers or an encryption config option
+// Could be extended with an encryption config option
 export interface HeaderInterceptorConfig {
   headers: HttpHeader;
+  enableDynamicHeaders: boolean;
 }
 
 export const defaultHeaderConfig: HeaderInterceptorConfig = {
-  headers: {}
+  headers: {},
+  enableDynamicHeaders: false
 }
 
 export const HEADER_INTERCEPTOR_CONFIG = new InjectionToken<HeaderInterceptorConfig>('header.config');
