@@ -3,7 +3,7 @@ Common HTTP Interceptors for Angular Applications. Available as HTTP Inteceptor 
 
 ## Interceptors
 - [HeaderInterceptor](/ngx-interceptors/projects/ngx-interceptors/src/lib/header/)
-- [LoggingInterceptr](/ngx-interceptors/projects/ngx-interceptors/src/lib/logging/)
+- [LoggingInterceptor](/ngx-interceptors/projects/ngx-interceptors/src/lib/logging/)
 - [RetryInterceptor](/ngx-interceptors/projects/ngx-interceptors/src/lib/retry/)
 
 ## Usage
