@@ -8,3 +8,4 @@ export * from './lib/retry/retry.interceptor';
 export * from './lib/retry/retry.config';
 export * from './lib/header/header.interceptor';
 export * from './lib/header/header.config';
+export * from './lib/header/services/dynamic-header.service'
