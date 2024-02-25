@@ -5,7 +5,7 @@ import { AUTH_INTERCEPTOR_CONFIG, AuthInterceptorConfig, defaultAuthConfig } fro
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  constructor(@Optional() @Inject(AUTH_INTERCEPTOR_CONFIG) private config: AuthInterceptorConfig, private dynamicHeaderService: DynamicHeaderService) {
+  constructor(@Optional() @Inject(AUTH_INTERCEPTOR_CONFIG) private config: AuthInterceptorConfig) {
     this.config = this.config ?? defaultAuthConfig
   }
 
@@ -24,10 +24,11 @@ export class AuthInterceptor implements HttpInterceptor {
 
 export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>, next: HttpHandlerFn) => {
   const config = inject(AUTH_INTERCEPTOR_CONFIG, { optional: true}) ?? defaultAuthConfig;
+  const token = '';
 
   const modifiedReq = req.clone({
     setHeaders: {
-        'Bearer': '<TOKEN>'
+      Authorization: `Bearer ${token}`
       }
   })
 
