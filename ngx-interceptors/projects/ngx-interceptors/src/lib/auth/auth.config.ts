@@ -7,12 +7,16 @@ export interface AuthTokenProvider {
 
 export interface AuthInterceptorConfig {
     tokenProvider: AuthTokenProvider;
+    headerName: string;
+    bearerPrefix: boolean;
 }
 
 export const defaultAuthConfig: AuthInterceptorConfig = {
     tokenProvider: {
         getToken: () => of('defaultToken')
-    }
+    },
+    headerName: 'Authorization',
+    bearerPrefix: true
 };
 
 export const AUTH_INTERCEPTOR_CONFIG = new InjectionToken<AuthInterceptorConfig>('auth.config');

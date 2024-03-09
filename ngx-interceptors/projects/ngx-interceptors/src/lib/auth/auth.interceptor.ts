@@ -11,9 +11,13 @@ export class AuthInterceptor implements HttpInterceptor {
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return this.config.tokenProvider.getToken().pipe(switchMap((token) => {
+      let value = token;
+      if (this.config.bearerPrefix) {
+        value = `Bearer ${value}`
+      }
       const modifiedReq = req.clone({
         setHeaders: {
-          Authorization: `Bearer ${token}`
+          [this.config.headerName]: value
         }
       })
       return next.handle(modifiedReq);
@@ -24,12 +28,16 @@ export class AuthInterceptor implements HttpInterceptor {
 export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>, next: HttpHandlerFn) => {
   const config = inject(AUTH_INTERCEPTOR_CONFIG, { optional: true}) ?? defaultAuthConfig;
   return config.tokenProvider.getToken().pipe(switchMap((token) => {
+    let value = token;
+    if (config.bearerPrefix) {
+      value = `Bearer ${value}`
+    }
     const modifiedReq = req.clone({
       setHeaders: {
-        Authorization: `Bearer ${token}`
-        }
+        [config.headerName]: value
+      }
     })
-  
+
     return next(modifiedReq);
   }))
 }

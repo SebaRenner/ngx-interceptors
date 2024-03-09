@@ -2,6 +2,7 @@
 Common HTTP Interceptors for Angular Applications. Available as HTTP Inteceptor class or function.
 
 ## Interceptors
+- [AuthInterceptor](/ngx-interceptors/projects/ngx-interceptors/src/lib/auth/)
 - [HeaderInterceptor](/ngx-interceptors/projects/ngx-interceptors/src/lib/header/)
 - [LoggingInterceptor](/ngx-interceptors/projects/ngx-interceptors/src/lib/logging/)
 - [RetryInterceptor](/ngx-interceptors/projects/ngx-interceptors/src/lib/retry/)

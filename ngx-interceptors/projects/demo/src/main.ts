@@ -12,7 +12,9 @@ bootstrapApplication(AppComponent, {
     {
       provide: AUTH_INTERCEPTOR_CONFIG,
       useValue: {
-        tokenProvider: new CustomTokenProviderService()
+        tokenProvider: new CustomTokenProviderService(),
+        headerName: 'Authorization',
+        bearerPrefix: true
       }
     }
   ]
