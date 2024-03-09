@@ -1,18 +1,18 @@
 import { bootstrapApplication } from '@angular/platform-browser';
 import { AppComponent } from './app/app.component';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { RETRY_INTERCEPTOR_CONFIG, retryInterceptor } from '../../ngx-interceptors/src/public-api';
+import { AUTH_INTERCEPTOR_CONFIG, authInterceptor } from '../../ngx-interceptors/src/public-api';
+import { CustomTokenProviderService } from './app/custom-token-provider.service';
 
 bootstrapApplication(AppComponent, {
   providers: [
     provideHttpClient(
-      withInterceptors([retryInterceptor])
+      withInterceptors([authInterceptor])
     ),
     {
-      provide: RETRY_INTERCEPTOR_CONFIG,
+      provide: AUTH_INTERCEPTOR_CONFIG,
       useValue: {
-        retries: 2,
-        delay: 2000
+        tokenProvider: new CustomTokenProviderService()
       }
     }
   ]

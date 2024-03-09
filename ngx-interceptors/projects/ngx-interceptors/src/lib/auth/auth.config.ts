@@ -1,7 +1,18 @@
 import { InjectionToken } from "@angular/core";
+import { Observable, of } from "rxjs";
 
-export interface AuthInterceptorConfig {}
+export interface AuthTokenProvider {
+    getToken(): Observable<string>;
+}
 
-export const defaultAuthConfig: AuthInterceptorConfig = {}
+export interface AuthInterceptorConfig {
+    tokenProvider: AuthTokenProvider;
+}
+
+export const defaultAuthConfig: AuthInterceptorConfig = {
+    tokenProvider: {
+        getToken: () => of('defaultToken')
+    }
+};
 
 export const AUTH_INTERCEPTOR_CONFIG = new InjectionToken<AuthInterceptorConfig>('auth.config');

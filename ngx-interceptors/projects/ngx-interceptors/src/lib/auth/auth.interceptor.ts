@@ -1,6 +1,6 @@
 import { HttpEvent, HttpHandler, HttpHandlerFn, HttpInterceptor, HttpInterceptorFn, HttpRequest } from "@angular/common/http";
 import { Inject, Injectable, Optional, inject } from "@angular/core";
-import { Observable } from "rxjs";
+import { Observable, switchMap } from "rxjs";
 import { AUTH_INTERCEPTOR_CONFIG, AuthInterceptorConfig, defaultAuthConfig } from "./auth.config";
 
 @Injectable()
@@ -10,27 +10,26 @@ export class AuthInterceptor implements HttpInterceptor {
   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const token = '';
-
-    const modifiedReq = req.clone({
-      setHeaders: {
-        Authorization: `Bearer ${token}`
-      }
-    })
-
-    return next.handle(modifiedReq);
+    return this.config.tokenProvider.getToken().pipe(switchMap((token) => {
+      const modifiedReq = req.clone({
+        setHeaders: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+      return next.handle(modifiedReq);
+    }))
   }
 }
 
 export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>, next: HttpHandlerFn) => {
   const config = inject(AUTH_INTERCEPTOR_CONFIG, { optional: true}) ?? defaultAuthConfig;
-  const token = '';
-
-  const modifiedReq = req.clone({
-    setHeaders: {
-      Authorization: `Bearer ${token}`
-      }
-  })
-
-  return next(modifiedReq);
+  return config.tokenProvider.getToken().pipe(switchMap((token) => {
+    const modifiedReq = req.clone({
+      setHeaders: {
+        Authorization: `Bearer ${token}`
+        }
+    })
+  
+    return next(modifiedReq);
+  }))
 }
