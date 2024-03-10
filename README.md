@@ -68,3 +68,5 @@ providers: [
     }
   ]
 ```
+
+If no or incomplete configurations are provided, the default values will be used.
