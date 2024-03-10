@@ -6,7 +6,7 @@ import { RETRY_INTERCEPTOR_CONFIG, RetryInterceptorConfig, defaultRetryConfig } 
 @Injectable()
 export class RetryInterceptor implements HttpInterceptor {
   constructor(@Optional() @Inject(RETRY_INTERCEPTOR_CONFIG) private config: RetryInterceptorConfig) {
-    this.config = this.config ?? defaultRetryConfig
+    this.config = { ...defaultRetryConfig, ...this.config };
   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -16,7 +16,8 @@ export class RetryInterceptor implements HttpInterceptor {
 }
 
 export const retryInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>, next: HttpHandlerFn) => {
-  const config = inject(RETRY_INTERCEPTOR_CONFIG, { optional: true}) ?? defaultRetryConfig;
+  const injectedConfig = inject(RETRY_INTERCEPTOR_CONFIG, { optional: true});
+  const config: RetryInterceptorConfig = { ...defaultRetryConfig, ...injectedConfig };
 
   return next(req)
     .pipe(retry({ count: config.retries, delay: config.delay }));

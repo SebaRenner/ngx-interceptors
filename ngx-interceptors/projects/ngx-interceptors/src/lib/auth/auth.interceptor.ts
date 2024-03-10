@@ -6,7 +6,7 @@ import { AUTH_INTERCEPTOR_CONFIG, AuthInterceptorConfig, defaultAuthConfig } fro
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
   constructor(@Optional() @Inject(AUTH_INTERCEPTOR_CONFIG) private config: AuthInterceptorConfig) {
-    this.config = this.config ?? defaultAuthConfig
+    this.config = { ...defaultAuthConfig, ...this.config };
   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -26,7 +26,9 @@ export class AuthInterceptor implements HttpInterceptor {
 }
 
 export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>, next: HttpHandlerFn) => {
-  const config = inject(AUTH_INTERCEPTOR_CONFIG, { optional: true}) ?? defaultAuthConfig;
+  const injectedConfig = inject(AUTH_INTERCEPTOR_CONFIG, { optional: true});
+  const config: AuthInterceptorConfig = { ...defaultAuthConfig, ...injectedConfig }; 
+
   return config.tokenProvider.getToken().pipe(switchMap((token) => {
     let value = token;
     if (config.bearerPrefix) {

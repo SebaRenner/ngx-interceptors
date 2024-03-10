@@ -7,7 +7,7 @@ import { DynamicHeaderService } from "./services/dynamic-header.service";
 @Injectable()
 export class HeaderInterceptor implements HttpInterceptor {
   constructor(@Optional() @Inject(HEADER_INTERCEPTOR_CONFIG) private config: HeaderInterceptorConfig, private dynamicHeaderService: DynamicHeaderService) {
-    this.config = this.config ?? defaultHeaderConfig
+    this.config = { ...defaultHeaderConfig, ...this.config };
   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -26,7 +26,8 @@ export class HeaderInterceptor implements HttpInterceptor {
 }
 
 export const headerInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>, next: HttpHandlerFn) => {
-  const config = inject(HEADER_INTERCEPTOR_CONFIG, { optional: true}) ?? defaultHeaderConfig;
+  const injectedConfig = inject(HEADER_INTERCEPTOR_CONFIG, { optional: true});
+  const config: HeaderInterceptorConfig = { ...defaultHeaderConfig, ...injectedConfig }
 
   let headers: HttpHeader = config.headers;
   if (config.enableDynamicHeaders) {
