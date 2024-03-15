@@ -1,6 +1,13 @@
 # ngx-interceptors
 Common HTTP Interceptors for Angular Applications. Available as HTTP Inteceptor class or function.
 
+## Installation
+Using npm: 
+`npm i ngx-interceptors`
+
+Using yarn: 
+`yarn add ngx-interceptors`
+
 ## Interceptors
 - [AuthInterceptor](/ngx-interceptors/projects/ngx-interceptors/src/lib/auth/)
 - [HeaderInterceptor](/ngx-interceptors/projects/ngx-interceptors/src/lib/header/)
