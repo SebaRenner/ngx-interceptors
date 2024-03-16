@@ -9,10 +9,10 @@ Using yarn:
 `yarn add ngx-interceptors`
 
 ## Interceptors
-- [AuthInterceptor](/ngx-interceptors/projects/ngx-interceptors/src/lib/auth/)
-- [HeaderInterceptor](/ngx-interceptors/projects/ngx-interceptors/src/lib/header/)
-- [LoggingInterceptor](/ngx-interceptors/projects/ngx-interceptors/src/lib/logging/)
-- [RetryInterceptor](/ngx-interceptors/projects/ngx-interceptors/src/lib/retry/)
+- [AuthInterceptor](https://github.com/SebaRenner/ngx-interceptors/blob/main/ngx-interceptors/projects/ngx-interceptors/src/lib/auth/)
+- [HeaderInterceptor](https://github.com/SebaRenner/ngx-interceptors/blob/main/ngx-interceptors/projects/ngx-interceptors/src/lib/header/)
+- [LoggingInterceptor](https://github.com/SebaRenner/ngx-interceptors/blob/main/ngx-interceptors/projects/ngx-interceptors/src/lib/logging/)
+- [RetryInterceptor](https://github.com/SebaRenner/ngx-interceptors/blob/main/ngx-interceptors/projects/ngx-interceptors/src/lib/retry/)
 
 ## Usage
 Adding one or multiple interceptors to your application is done by registering them as providers. Either in your module class or for standalone projects in the bootstrap application function.
