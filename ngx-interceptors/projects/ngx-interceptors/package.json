@@ -1,6 +1,23 @@
 {
   "name": "ngx-interceptors",
-  "version": "0.0.1",
+  "description": "Library with common HTTP Interceptors for Angular Applications",
+  "version": "0.0.2",
+  "keywords": [
+    "angular",
+    "angular2",
+    "interceptor",
+    "http",
+    "http-client"
+  ],
+  "homepage": "https://github.com/SebaRenner/ngx-interceptors#readme",
+  "license": "GPL-3.0-only",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SebaRenner/ngx-interceptors.git"
+  },
+  "author": {
+    "name": "Sebastian Renner"
+  },
   "peerDependencies": {
     "@angular/common": "^17.1.0",
     "@angular/core": "^17.1.0"
