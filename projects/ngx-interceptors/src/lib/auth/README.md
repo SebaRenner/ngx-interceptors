@@ -6,9 +6,9 @@ The configuration of the auth interceptor can be overwritten by providing the `A
 
 | Field | Default | Description | 
 |---|---|---|
-| tokenProvider | `() => of('defaultToken')` | Provide an instance of an `AuthTokenProvider` |
-| headerName | `'Authorization'` | Custom name for the auth header |
-| bearerPrefix | `true` | Whether to add the `'Bearer '` prefix in front of the auth token or not |
+| `tokenProvider` | `() => of('defaultToken')` | Provide an instance of an `AuthTokenProvider` |
+| `headerName` | `'Authorization'` | Custom name for the auth header |
+| `bearerPrefix` | `true` | Whether to add the `'Bearer '` prefix in front of the auth token or not |
 
 ## Token Provider Usage
 Create a service that implements the `AuthTokenProvider` interface. The interface requires you to implement a `getToken()` function. 
