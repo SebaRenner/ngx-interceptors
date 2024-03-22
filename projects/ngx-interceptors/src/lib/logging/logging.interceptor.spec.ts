@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
 import { LoggingInterceptor } from './logging.interceptor';
-import { LOGGING_INTERCEPTOR_CONFIG } from './logging.config';
+import { LOGGING_INTERCEPTOR_CONFIG, LoggingDateFormat, defaultLoggingConfig } from './logging.config';
 
 describe('LoggingInterceptor', () => {
   let httpClient: HttpClient;
@@ -19,58 +19,66 @@ describe('LoggingInterceptor', () => {
         }
       ]
     });
-
-    // httpClient = TestBed.inject(HttpClient);
-    // httpMock = TestBed.inject(HttpTestingController);
+    jasmine.clock().install();
   });
 
   afterEach(() => {
     httpMock.verify();
+    jasmine.clock().uninstall();
   });
 
-  it('should log to console', () => {
+  it('should log once to console using default logging config', () => {
+    // arrange
+    const consoleSpy = spyOn(console, 'log');
+    const dateTime = new Date(2024, 0, 1, 12, 0, 0);
+    const url = 'https://example.com';
+    const expectedLog = `[${dateTime.toISOString()}] [GET] ${url}`;
+    jasmine.clock().mockDate(dateTime);
+
     httpClient = TestBed.inject(HttpClient);
     httpMock = TestBed.inject(HttpTestingController);
-    const consoleSpy = spyOn(console, 'log');
 
-    httpClient.get('https://example.com').subscribe();
+    // act
+    httpClient.get(url).subscribe();
 
-    const req = httpMock.expectOne('https://example.com');
-    expect(req.request.method).toEqual('GET');
-
-    req.flush({});
-
-    expect(consoleSpy).toHaveBeenCalledTimes(1);
+    // assert
+    httpMock.expectOne(url);
+    expect(consoleSpy).toHaveBeenCalledOnceWith(`%c${expectedLog}`, `color: ${defaultLoggingConfig.color}`);
   });
 
-  it('should use default configuration when no configuration is passed', () => {
-    httpClient = TestBed.inject(HttpClient);
-    httpMock = TestBed.inject(HttpTestingController);
+  it('should log once to console in color provided in config', () => {
+    // arrange
     const consoleSpy = spyOn(console, 'log');
-
-    httpClient.get('https://example.com').subscribe();
-
-    const req = httpMock.expectOne('https://example.com');
-    expect(req.request.method).toEqual('GET');
-
-    req.flush({});
-
-    expect(consoleSpy).toHaveBeenCalledWith(jasmine.any(String), 'color: black');
-  });
-
-  it('should use provided configuration when configuration is passed', () => {
+    const url = 'https://example.com';
     TestBed.overrideProvider(LOGGING_INTERCEPTOR_CONFIG, { useValue: { color: 'green' } });
     httpClient = TestBed.inject(HttpClient);
     httpMock = TestBed.inject(HttpTestingController);
+
+    // act
+    httpClient.get(url).subscribe();
+
+    // assert
+    httpMock.expectOne(url);
+    expect(consoleSpy).toHaveBeenCalledOnceWith(jasmine.any(String), 'color: green');
+  });
+
+  it('should log once to console using date format provided in config', () => {
+    // arrange
     const consoleSpy = spyOn(console, 'log');
+    const dateTime = new Date(2024, 0, 1, 12, 0, 0);
+    const url = 'https://example.com';
+    const expectedLog = `[${dateTime.toUTCString()}] [GET] ${url}`;
+    jasmine.clock().mockDate(dateTime);
 
-    httpClient.get('https://example.com').subscribe();
+    TestBed.overrideProvider(LOGGING_INTERCEPTOR_CONFIG, { useValue: { dateFormat: LoggingDateFormat.UTC } });
+    httpClient = TestBed.inject(HttpClient);
+    httpMock = TestBed.inject(HttpTestingController);
 
-    const req = httpMock.expectOne('https://example.com');
-    expect(req.request.method).toEqual('GET');
+    // act
+    httpClient.get(url).subscribe();
 
-    req.flush({});
-
-    expect(consoleSpy).toHaveBeenCalledWith(jasmine.any(String), 'color: green');
+    // assert
+    httpMock.expectOne(url);
+    expect(consoleSpy).toHaveBeenCalledOnceWith(`%c${expectedLog}`, `color: ${defaultLoggingConfig.color}`);
   });
 });
