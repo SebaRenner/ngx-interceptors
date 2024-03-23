@@ -13,6 +13,7 @@ Using yarn:
 - [HeaderInterceptor](https://github.com/SebaRenner/ngx-interceptors/blob/main/projects/ngx-interceptors/src/lib/header/)
 - [LoggingInterceptor](https://github.com/SebaRenner/ngx-interceptors/blob/main/projects/ngx-interceptors/src/lib/logging/)
 - [RetryInterceptor](https://github.com/SebaRenner/ngx-interceptors/blob/main/projects/ngx-interceptors/src/lib/retry/)
+- [MockInterceptor](https://github.com/SebaRenner/ngx-interceptors/blob/main/projects/ngx-interceptors/src/lib/mock/)
 
 ## Usage
 Adding one or multiple interceptors to your application is done by registering them as providers. Either in your module class or for standalone projects in the bootstrap application function.

@@ -1,7 +1,7 @@
 {
   "name": "ngx-interceptors",
   "description": "Library with common HTTP Interceptors for Angular Applications",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "keywords": [
     "angular",
     "angular2",

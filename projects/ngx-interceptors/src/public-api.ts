@@ -11,3 +11,5 @@ export * from './lib/header/header.config';
 export * from './lib/header/services/dynamic-header.service'
 export * from './lib/auth/auth.interceptor';
 export * from './lib/auth/auth.config';
+export * from './lib/mock/mock.interceptor';
+export * from './lib/mock/mock.config';
