@@ -10,9 +10,11 @@ export class LoggingInterceptor implements HttpInterceptor {
   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const now = getFormattedTimestamp(new Date(), this.config.dateFormat);
+    if (this.config.urlFilter.length === 0 || this.config.urlFilter.some((url) => req.url.startsWith(url))) {
+      const now = getFormattedTimestamp(new Date(), this.config.dateFormat);
 
-    console.log(`%c[${now}] [${req.method}] ${req.url}`, `color: ${this.config.color}`)
+      console.log(`%c[${now}] [${req.method}] ${req.url}`, `color: ${this.config.color}`)
+    }
 
     return next.handle(req);
   }
@@ -21,9 +23,12 @@ export class LoggingInterceptor implements HttpInterceptor {
 export const loggingInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>, next: HttpHandlerFn) => {
   const injectedConfig = inject(LOGGING_INTERCEPTOR_CONFIG, { optional: true});
   const config: LoggingInterceptorConfig = { ...defaultLoggingConfig, ...injectedConfig };
-  const now = getFormattedTimestamp(new Date(), config.dateFormat);
 
-  console.log(`%c[${now}] [${req.method}] ${req.url}`, `color: ${config.color}`)
+  if (config.urlFilter.length === 0 || config.urlFilter.some((url) => req.url.startsWith(url))) {
+    const now = getFormattedTimestamp(new Date(), config.dateFormat);
+
+    console.log(`%c[${now}] [${req.method}] ${req.url}`, `color: ${config.color}`)
+  }
 
   return next(req);
 }

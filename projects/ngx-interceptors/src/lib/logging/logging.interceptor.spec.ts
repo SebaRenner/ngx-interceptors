@@ -81,4 +81,40 @@ describe('LoggingInterceptor', () => {
     httpMock.expectOne(url);
     expect(consoleSpy).toHaveBeenCalledOnceWith(`%c${expectedLog}`, `color: ${defaultLoggingConfig.color}`);
   });
+
+  it('should log once to console because url matches filter', () => {
+    // arrange
+    const consoleSpy = spyOn(console, 'log');
+    const url = 'https://example.com/api/users/1';
+    const urlFilter = ['https://example.com/api'];
+
+    TestBed.overrideProvider(LOGGING_INTERCEPTOR_CONFIG, { useValue: { urlFilter } });
+    httpClient = TestBed.inject(HttpClient);
+    httpMock = TestBed.inject(HttpTestingController);
+
+    // act
+    httpClient.get(url).subscribe();
+
+    // assert
+    httpMock.expectOne(url);
+    expect(consoleSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('should not log to console when doesnt url match filter', () => {
+    // arrange
+    const consoleSpy = spyOn(console, 'log');
+    const url = 'https://example.com/api/messages';
+    const urlFilter = ['https://example.com/api/users'];
+
+    TestBed.overrideProvider(LOGGING_INTERCEPTOR_CONFIG, { useValue: { urlFilter } });
+    httpClient = TestBed.inject(HttpClient);
+    httpMock = TestBed.inject(HttpTestingController);
+
+    // act
+    httpClient.get(url).subscribe();
+
+    // assert
+    httpMock.expectOne(url);
+    expect(consoleSpy).not.toHaveBeenCalled();
+  });
 });

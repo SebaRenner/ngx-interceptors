@@ -8,6 +8,7 @@ The configuration of the logging interceptor can be overwritten by providing the
 |---|---|---|
 | `color` | `'black'` | The color of the log message |
 | `dateFormat` | `LoggingDateFormat.ISO` | The format the of timestamp |
+| `urlFilter` | `[]` | Only log to console when the request url starts with an element in the filter. If no filter is provided, all requests will be logged. |
 
 ### LoggingDateFormat Enum
 | Option | Example | Description |
