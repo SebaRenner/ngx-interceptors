@@ -57,6 +57,8 @@ export class CachingService {
     this._cache.clear();
   }
 
+  // SRE: I'm aware that in case of LFU and LRU once the cache is full with every new entry the array is sorted over and over again.
+  // I'll fix it one day so that on ctor based on the eviction policy an optimized data structure is used.
   private evict() {
     switch(this.config.evictionPolicy) {
       case CacheEvictionPolicy.None:

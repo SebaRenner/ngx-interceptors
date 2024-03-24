@@ -8,20 +8,20 @@ export enum CacheEvictionPolicy {
 }
 
 /*
-Config ideas:
+Additional config ideas:
 - include caching of HttpErrorResponses
-- Url blacklist for endpoint that shouldn't be cached
-- Only cache responses of requests with
 - Configurable TTL
 */
 export interface CachingInterceptorConfig {
   maxSize: number;
   evictionPolicy: CacheEvictionPolicy;
+  excludedEndpoints: string[];
 }
 
 export const defaultCachingConfig: CachingInterceptorConfig = {
   maxSize: 200,
-  evictionPolicy: CacheEvictionPolicy.LRU
+  evictionPolicy: CacheEvictionPolicy.LRU,
+  excludedEndpoints: []
 };
 
 export const CACHING_INTERCEPTOR_CONFIG = new InjectionToken<CachingInterceptorConfig>('caching.config');

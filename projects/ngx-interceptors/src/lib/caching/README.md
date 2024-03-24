@@ -8,6 +8,7 @@ The configuration of the caching interceptor can be overwritten by providing the
 |---|---|---|
 | `maxSize` | `200` | Max amount of cached request responses. Will throw an error if maxSize would be exceeded and no eviction policy is defined. |
 | `evictionPolicy` | `CacheEvictionPolicy.LRU` | The eviction policy defines which element should be removed when the cache would exceed the `maxSize` to make room for the new entry. |
+| `excludedEndpoints` | `[]` | Responses of requests to endpoints in this list will not be cached. |
 
 ### CacheEvictionPolicy Enum
 | Option | Description |

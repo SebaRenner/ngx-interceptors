@@ -11,6 +11,10 @@ export class CachingInterceptor implements HttpInterceptor {
   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    if (this.config.excludedEndpoints.some(endpoint => req.url.startsWith(endpoint))) {
+      return next.handle(req);
+    }
+
     var cachedResponse = this.cachingService.get(req.url);
     if (cachedResponse) return of(cachedResponse);
 
@@ -28,6 +32,10 @@ export const cachingInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>,
   const cachingService = inject(CachingService);
   const injectedConfig = inject(CACHING_INTERCEPTOR_CONFIG, { optional: true });
   const config: CachingInterceptorConfig = { ...defaultCachingConfig, ...injectedConfig };
+
+  if (config.excludedEndpoints.some(endpoint => req.url.startsWith(endpoint))) {
+    return next(req);
+  }
 
   var cachedResponse = cachingService.get(req.url);
   if (cachedResponse) return of(cachedResponse);

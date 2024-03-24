@@ -3,6 +3,7 @@ import { HttpClientTestingModule, HttpTestingController } from "@angular/common/
 import { TestBed } from "@angular/core/testing";
 import { CachingInterceptor } from "./caching.interceptor";
 import { CachingService } from "./services/caching.service";
+import { CACHING_INTERCEPTOR_CONFIG } from "./caching.config";
 
 describe('CachingInterceptor', () => {
   let httpClient: HttpClient;
@@ -21,9 +22,6 @@ describe('CachingInterceptor', () => {
         CachingService
       ]
     });
-    service = TestBed.inject(CachingService);
-    httpClient = TestBed.inject(HttpClient);
-    httpMock = TestBed.inject(HttpTestingController);
   });
 
   afterEach(() => {
@@ -33,6 +31,10 @@ describe('CachingInterceptor', () => {
   it('should add successful request to cache', () => {
     // arrange
     const url = 'https://example.com';
+
+    service = TestBed.inject(CachingService);
+    httpClient = TestBed.inject(HttpClient);
+    httpMock = TestBed.inject(HttpTestingController);
 
     // act
     httpClient.get(url).subscribe();
@@ -52,6 +54,10 @@ describe('CachingInterceptor', () => {
     // arrange
     const url = 'https://example.com';
 
+    service = TestBed.inject(CachingService);
+    httpClient = TestBed.inject(HttpClient);
+    httpMock = TestBed.inject(HttpTestingController);
+
     httpClient.get(url).subscribe();
 
     const req = httpMock.expectOne(url);
@@ -69,6 +75,10 @@ describe('CachingInterceptor', () => {
     // arrange
     const url = 'https://example.com';
 
+    service = TestBed.inject(CachingService);
+    httpClient = TestBed.inject(HttpClient);
+    httpMock = TestBed.inject(HttpTestingController);
+
     // act
     httpClient.get(url).subscribe({
       next: () => {},
@@ -77,6 +87,25 @@ describe('CachingInterceptor', () => {
 
     const req = httpMock.expectOne(url);
     req.flush({}, { status: 500, statusText: 'Server Error' });
+
+    // assert
+    expect(service.size).toBe(0);
+  });
+
+  it('should not cache request to excluded endpoint', () => {
+    // arrange
+    const url = 'https://example.com/api/users';
+
+    TestBed.overrideProvider(CACHING_INTERCEPTOR_CONFIG, { useValue: { excludedEndpoints: ['https://example.com/api'] } });
+    service = TestBed.inject(CachingService);
+    httpClient = TestBed.inject(HttpClient);
+    httpMock = TestBed.inject(HttpTestingController);
+
+    // act
+    httpClient.get(url).subscribe();
+
+    const req = httpMock.expectOne(url);
+    req.flush({}, { status: 200, statusText: 'Ok' });
 
     // assert
     expect(service.size).toBe(0);
