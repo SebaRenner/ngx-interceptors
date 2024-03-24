@@ -2,6 +2,9 @@ import { InjectionToken } from "@angular/core";
 
 export enum CacheEvictionPolicy {
   None,
+  LRU,
+  LFU,
+  FIFO
 }
 
 /*
@@ -18,7 +21,7 @@ export interface CachingInterceptorConfig {
 
 export const defaultCachingConfig: CachingInterceptorConfig = {
   maxSize: 200,
-  evictionPolicy: CacheEvictionPolicy.None
+  evictionPolicy: CacheEvictionPolicy.FIFO
 };
 
 export const CACHING_INTERCEPTOR_CONFIG = new InjectionToken<CachingInterceptorConfig>('caching.config');

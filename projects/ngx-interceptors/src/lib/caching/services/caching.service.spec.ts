@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { CachingService } from './caching.service';
 import { HttpResponse } from '@angular/common/http';
-import { CACHING_INTERCEPTOR_CONFIG } from '../caching.config';
+import { CACHING_INTERCEPTOR_CONFIG, CacheEvictionPolicy } from '../caching.config';
 
 describe('CachingService', () => {
   let service: CachingService;
@@ -54,9 +54,9 @@ describe('CachingService', () => {
     }).toThrowError('Sub zero max cache size is not allowed');
   });
 
-  it('should throw an error if max size is exceeded', () => {
+  it('should throw an error if max size is exceeded when using no evication policy', () => {
     // arrange
-    TestBed.overrideProvider(CACHING_INTERCEPTOR_CONFIG, { useValue: { maxSize: 3 } });
+    TestBed.overrideProvider(CACHING_INTERCEPTOR_CONFIG, { useValue: { maxSize: 3, evictionPolicy: CacheEvictionPolicy.None } });
     service = TestBed.inject(CachingService);
 
     const response = new HttpResponse({ status: 200, statusText: 'Ok' });
@@ -69,5 +69,25 @@ describe('CachingService', () => {
     expect(() => {
       service.add('url4', response)
     }).toThrowError('Cache of CachingInterceptor is full. You can manually clear it or use an eviction policy');
+  });
+
+  it('should remove the first entry if max size is exceeded when using FIFO eviction policy', () => {
+    // arrange
+    TestBed.overrideProvider(CACHING_INTERCEPTOR_CONFIG, { useValue: { maxSize: 3, evictionPolicy: CacheEvictionPolicy.FIFO } });
+    service = TestBed.inject(CachingService);
+
+    const response = new HttpResponse({ status: 200, statusText: 'Ok' });
+
+    service.add('url1', response)
+    service.add('url2', response)
+    service.add('url3', response)
+
+    // act
+    service.add('url4', response)
+
+    // assert
+    expect(service.size).toBe(3);
+    expect(service.get('url1')).toBeUndefined();
+    expect(service.get('url4')).toBeDefined();
   });
 });
