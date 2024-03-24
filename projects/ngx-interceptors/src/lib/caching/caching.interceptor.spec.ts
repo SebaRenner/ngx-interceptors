@@ -22,6 +22,8 @@ describe('CachingInterceptor', () => {
       ]
     });
     service = TestBed.inject(CachingService);
+    httpClient = TestBed.inject(HttpClient);
+    httpMock = TestBed.inject(HttpTestingController);
   });
 
   afterEach(() => {
@@ -31,9 +33,6 @@ describe('CachingInterceptor', () => {
   it('should add successful request to cache', () => {
     // arrange
     const url = 'https://example.com';
-
-    httpClient = TestBed.inject(HttpClient);
-    httpMock = TestBed.inject(HttpTestingController);
 
     // act
     httpClient.get(url).subscribe();
@@ -53,9 +52,6 @@ describe('CachingInterceptor', () => {
     // arrange
     const url = 'https://example.com';
 
-    httpClient = TestBed.inject(HttpClient);
-    httpMock = TestBed.inject(HttpTestingController);
-
     httpClient.get(url).subscribe();
 
     const req = httpMock.expectOne(url);
@@ -67,5 +63,22 @@ describe('CachingInterceptor', () => {
     // assert
     httpMock.expectNone(url);
     expect(service.size).toBe(1);
+  });
+
+  it('should not cache error response', () => {
+    // arrange
+    const url = 'https://example.com';
+
+    // act
+    httpClient.get(url).subscribe({
+      next: () => {},
+      error: () => {}
+    });
+
+    const req = httpMock.expectOne(url);
+    req.flush({}, { status: 500, statusText: 'Server Error' });
+
+    // assert
+    expect(service.size).toBe(0);
   });
 });

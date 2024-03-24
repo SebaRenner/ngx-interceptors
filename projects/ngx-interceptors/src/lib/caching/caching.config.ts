@@ -4,7 +4,7 @@ import { InjectionToken } from "@angular/core";
 Config ideas:
 - Max Cache Size
 - Eviction Policy
-- Only successful filter
+- include caching of HttpErrorResponses
 - Url blacklist for endpoint that shouldn't be cached
 */
 export interface CachingInterceptorConfig {}
