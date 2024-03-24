@@ -6,3 +6,4 @@ The configuration of the caching interceptor can be overwritten by providing the
 
 | Field | Default | Description | 
 |---|---|---|
+| `maxSize` | `200` | Max amount of cached request responses. Will throw an error if maxSize would be exceeded and no eviction policy is defined. |
