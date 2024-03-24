@@ -13,3 +13,6 @@ export * from './lib/auth/auth.interceptor';
 export * from './lib/auth/auth.config';
 export * from './lib/mock/mock.interceptor';
 export * from './lib/mock/mock.config';
+export * from './lib/caching/caching.interceptor';
+export * from './lib/caching/caching.config';
+export * from './lib/caching/services/caching.service'

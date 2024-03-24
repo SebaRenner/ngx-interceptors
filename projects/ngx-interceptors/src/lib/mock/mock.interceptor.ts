@@ -18,5 +18,5 @@ export const mockInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>, ne
   const injectedConfig = inject(MOCK_INTERCEPTOR_CONFIG, { optional: true });
   const config: MockInterceptorConfig = { ...defaultMockConfig, ...injectedConfig };
 
-  return of(config.response).pipe(delay(config.delay));;
+  return of(config.response).pipe(delay(config.delay));
 }
