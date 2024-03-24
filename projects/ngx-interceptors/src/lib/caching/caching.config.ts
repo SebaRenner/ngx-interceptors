@@ -21,7 +21,7 @@ export interface CachingInterceptorConfig {
 
 export const defaultCachingConfig: CachingInterceptorConfig = {
   maxSize: 200,
-  evictionPolicy: CacheEvictionPolicy.FIFO
+  evictionPolicy: CacheEvictionPolicy.LRU
 };
 
 export const CACHING_INTERCEPTOR_CONFIG = new InjectionToken<CachingInterceptorConfig>('caching.config');
