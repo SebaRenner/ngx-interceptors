@@ -11,16 +11,16 @@ interface Node<T> {
 export class RAODoubleLinkedList<T> {
   private _head: Node<T> | null;
   private _tail: Node<T> | null;
-  private _indexMap: Map<T, Node<T>>
+  private _index: Map<T, Node<T>>
 
   constructor() {
     this._head = null;
     this._tail = null;
-    this._indexMap = new Map<T, Node<T>>();
+    this._index = new Map<T, Node<T>>();
   }
 
   get size(): number {
-    return this._indexMap.size;
+    return this._index.size;
   }
 
   get head(): Node<T> | null {
@@ -36,7 +36,7 @@ export class RAODoubleLinkedList<T> {
    * If list is empty, the element will be the new head and tail.
    */
   add(value: T): void {
-    if (this._indexMap.has(value)) {
+    if (this._index.has(value)) {
       this.moveToEnd(value);
       return;
     }
@@ -55,12 +55,13 @@ export class RAODoubleLinkedList<T> {
     }
 
     this._tail = node;
-    this._indexMap.set(value, node);
+    this._index.set(value, node);
   }
 
   /**
    * Removes oldest item from the list.
-   * Early returns when list is empty
+   * Early returns when list is empty.
+   * @returns removed value or null if list is empty.
    */
   removeHead(): T | null {
     if (!this._head) return null;
@@ -73,7 +74,7 @@ export class RAODoubleLinkedList<T> {
       this._tail = null;
     }
 
-    this._indexMap.delete(value)
+    this._index.delete(value)
     return value;
   }
 
@@ -83,7 +84,7 @@ export class RAODoubleLinkedList<T> {
    * Throws an exception if no node with this key exists.
    */
   moveToEnd(key: T): void {
-    const node = this._indexMap.get(key);
+    const node = this._index.get(key);
 
     if (!this._tail || this._tail === node) return;
     if (!node) throw new Error("No element found with this key");
@@ -113,6 +114,6 @@ export class RAODoubleLinkedList<T> {
   clear(): void {
     this._head = null;
     this._tail = null;
-    this._indexMap.clear();
+    this._index.clear();
   }
 }

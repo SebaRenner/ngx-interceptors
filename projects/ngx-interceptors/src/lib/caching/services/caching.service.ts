@@ -1,10 +1,10 @@
 import { HttpResponse } from "@angular/common/http";
 import { Inject, Injectable, Optional } from "@angular/core";
 import { CACHING_INTERCEPTOR_CONFIG, CacheEvictionPolicy, CachingInterceptorConfig, defaultCachingConfig } from "../caching.config";
+import { RAODoubleLinkedList } from "../../utils/rao-double-linked-list";
 
 interface CacheEntry<T> {
   value: T;
-  lastAccessed: Date;
   accessCount: number;
 }
 
@@ -13,6 +13,7 @@ interface CacheEntry<T> {
 })
 export class CachingService {
   private _cache: Map<string, CacheEntry<HttpResponse<unknown>>> = new Map<string, CacheEntry<HttpResponse<unknown>>>();
+  private _lru: RAODoubleLinkedList<string> = new RAODoubleLinkedList<string>();
 
   constructor(@Optional() @Inject(CACHING_INTERCEPTOR_CONFIG) private config: CachingInterceptorConfig) {
     this.config = { ...defaultCachingConfig, ...this.config };
@@ -32,10 +33,13 @@ export class CachingService {
 
     const cacheEntry: CacheEntry<HttpResponse<unknown>> = {
       value: response,
-      lastAccessed: new Date(),
       accessCount: 0
     };
     this._cache.set(url, cacheEntry);
+
+    if (this.config.evictionPolicy === CacheEvictionPolicy.LRU) {
+      this._lru.add(url);
+    }
   }
 
   get(url: string): HttpResponse<unknown> | undefined {
@@ -44,10 +48,13 @@ export class CachingService {
     if (cacheEntry) {
       const updatedEntry: CacheEntry<HttpResponse<unknown>> = {
         value: cacheEntry.value,
-        lastAccessed: new Date(),
         accessCount: cacheEntry.accessCount + 1
       };
       this._cache.set(url, updatedEntry);
+
+      if (this.config.evictionPolicy === CacheEvictionPolicy.LRU) {
+        this._lru.moveToEnd(url);
+      }
     }
 
     return cacheEntry?.value;
@@ -55,10 +62,11 @@ export class CachingService {
 
   clear() {
     this._cache.clear();
+    this._lru.clear();
   }
 
-  // SRE: I'm aware that in case of LFU and LRU once the cache is full with every new entry the array is sorted over and over again.
-  // I'll fix it one day so that on ctor based on the eviction policy an optimized data structure is used.
+  // SRE: I'm aware that in case of LFU once the cache is full with every new entry the array is sorted over and over again.
+  // I'll fix it one day. Most-likely with a separate min-heap that tracks the access count.
   private evict() {
     switch(this.config.evictionPolicy) {
       case CacheEvictionPolicy.None:
@@ -74,10 +82,8 @@ export class CachingService {
         this._cache.delete(lfuSortedCache[0][0]);
         break;
       case CacheEvictionPolicy.LRU:
-        const lruSortedCache = Array.from(this._cache.entries()).sort((a, b) => {
-          return a[1].lastAccessed.getTime() - b[1].lastAccessed.getTime();
-        });
-        this._cache.delete(lruSortedCache[0][0]);
+        const lru = this._lru.removeHead();
+        if (lru) this._cache.delete(lru);
         break;
     }
   }
