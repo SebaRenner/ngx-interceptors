@@ -1,5 +1,4 @@
 interface Node<T> {
-  key: string;
   value: T;
   prev: Node<T> | null;
   next: Node<T> | null;
@@ -12,12 +11,12 @@ interface Node<T> {
 export class RAODoubleLinkedList<T> {
   private _head: Node<T> | null;
   private _tail: Node<T> | null;
-  private _indexMap: Map<string, Node<T>>
+  private _indexMap: Map<T, Node<T>>
 
   constructor() {
     this._head = null;
     this._tail = null;
-    this._indexMap = new Map<string, Node<T>>();
+    this._indexMap = new Map<T, Node<T>>();
   }
 
   get size(): number {
@@ -36,14 +35,13 @@ export class RAODoubleLinkedList<T> {
    * Adds element to end of list.
    * If list is empty, the element will be the new head and tail.
    */
-  add(key: string, value: T): void {
-    if (this._indexMap.has(key)) {
-      this.moveToEnd(key);
+  add(value: T): void {
+    if (this._indexMap.has(value)) {
+      this.moveToEnd(value);
       return;
     }
 
     const node: Node<T> = {
-      key,
       value,
       next: null,
       prev: null
@@ -57,16 +55,17 @@ export class RAODoubleLinkedList<T> {
     }
 
     this._tail = node;
-    this._indexMap.set(key, node);
+    this._indexMap.set(value, node);
   }
 
   /**
-   * Removes oldest item from the list
+   * Removes oldest item from the list.
    * Early returns when list is empty
    */
-  removeHead(): void {
-    if (!this._head) return;
-    const key = this._head.key;
+  removeHead(): T | null {
+    if (!this._head) return null;
+
+    const value = this._head.value
 
     this._head = this._head.next;
 
@@ -74,7 +73,8 @@ export class RAODoubleLinkedList<T> {
       this._tail = null;
     }
 
-    this._indexMap.delete(key)
+    this._indexMap.delete(value)
+    return value;
   }
 
   /**
@@ -82,10 +82,10 @@ export class RAODoubleLinkedList<T> {
    * Early returns if the list empty.
    * Throws an exception if no node with this key exists.
    */
-  moveToEnd(key: string): void {
+  moveToEnd(key: T): void {
     const node = this._indexMap.get(key);
 
-    if (!this._tail) return;
+    if (!this._tail || this._tail === node) return;
     if (!node) throw new Error("No element found with this key");
 
     // fix pointers of previous and next nodes
@@ -96,10 +96,23 @@ export class RAODoubleLinkedList<T> {
       node.next.prev = node.prev;
     }
 
+    if (node === this._head) {
+      this._head = node.next;
+    }
+
     // add to tail
     node.prev = this._tail;
     node.next = null;
     this._tail.next = node;
     this._tail = node;
+  }
+
+  /**
+   * Empty list and index.
+   */
+  clear(): void {
+    this._head = null;
+    this._tail = null;
+    this._indexMap.clear();
   }
 }
