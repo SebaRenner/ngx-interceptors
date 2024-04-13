@@ -16,7 +16,7 @@ export const calcDelay = (attempt: number, config: RetryInterceptorConfig): numb
 
   if (config.addJitter) {
     const jitter = (Math.random() * 2 - 1) * config.jitterFactor;
-    delay = delay + jitter;
+    delay = Math.max(0, delay + jitter);
   }
 
   return delay;

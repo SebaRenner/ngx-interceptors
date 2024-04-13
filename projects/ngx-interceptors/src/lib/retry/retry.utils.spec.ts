@@ -83,4 +83,26 @@ describe('calcDelay', () => {
     // assert
     expect(result).toBe(expectedResult);
   });
+
+  it('should return 0 if delay + jitter would be negative', () => {
+    // arrange
+    const randomValue = 0.25;
+    spyOn(Math, 'random').and.returnValue(randomValue);
+
+    const attempt = 2;
+    const delay = 0;
+
+    const config: RetryInterceptorConfig = {
+      ...defaultRetryConfig,
+      backoffStrategy: BackoffStrategy.Fixed,
+      delay: delay,
+      addJitter: true,
+    };
+
+    // act
+    const result = calcDelay(attempt, config)
+
+    // assert
+    expect(result).toBe(0);
+  });
 });
