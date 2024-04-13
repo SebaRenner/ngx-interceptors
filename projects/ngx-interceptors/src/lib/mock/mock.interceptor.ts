@@ -7,6 +7,9 @@ import { Observable, delay, of } from "rxjs";
 export class MockInterceptor implements HttpInterceptor {
   constructor(@Optional() @Inject(MOCK_INTERCEPTOR_CONFIG) private config: MockInterceptorConfig) {
     this.config = { ...defaultMockConfig, ...this.config };
+    if (this.config.delay < 0) {
+      throw new Error('Sub zero delay is not allowed');
+    }
   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -17,6 +20,9 @@ export class MockInterceptor implements HttpInterceptor {
 export const mockInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>, next: HttpHandlerFn) => {
   const injectedConfig = inject(MOCK_INTERCEPTOR_CONFIG, { optional: true });
   const config: MockInterceptorConfig = { ...defaultMockConfig, ...injectedConfig };
+  if (config.delay < 0) {
+    throw new Error('Sub zero delay is not allowed');
+  }
 
   return of(config.response).pipe(delay(config.delay));
 }

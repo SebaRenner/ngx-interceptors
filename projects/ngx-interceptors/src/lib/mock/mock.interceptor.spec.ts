@@ -1,4 +1,4 @@
-import { HTTP_INTERCEPTORS, HttpClient, HttpResponse } from "@angular/common/http";
+import { HTTP_INTERCEPTORS, HttpClient, HttpErrorResponse, HttpResponse } from "@angular/common/http";
 import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
 import { TestBed, fakeAsync, tick } from "@angular/core/testing";
 import { MockInterceptor } from "./mock.interceptor";
@@ -92,4 +92,27 @@ describe('MockInterceptor', () => {
     // assert
     httpMock.expectNone('https://example.com');
   }));
+
+  it('should throw an error if negative delay is provided', () => {
+    // arrange
+    TestBed.overrideProvider(MOCK_INTERCEPTOR_CONFIG, { useValue: { delay: -1 } });
+    httpClient = TestBed.inject(HttpClient);
+    httpMock = TestBed.inject(HttpTestingController);
+
+    let error: HttpErrorResponse | undefined;
+
+    // act
+    httpClient.get('/some/url').subscribe({
+      next: () => {
+        fail('Expected an error to be thrown');
+      },
+      error: (err) => {
+        error = err;
+      }
+    });
+
+    // assert
+    expect(error).toBeDefined();
+    expect(error?.message).toBe('Sub zero delay is not allowed');
+  });
 });

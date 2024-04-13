@@ -7,4 +7,4 @@ The configuration of the mock interceptor can be overwritten by providing the `M
 | Field | Default | Description | 
 |---|---|---|
 | `response` | `new HttpResponse({ status: 204, statusText: 'No content', body: 'mock response' }),` | The response the mock interceptor should return  | 
-| `delay` | `0` | Allows you to simulate network latency | 
+| `delay` | `0` | Allows you to simulate network latency. Will throw an error if set to a sub-zero value. | 

@@ -6,8 +6,8 @@ The configuration of the logging interceptor can be overwritten by providing the
 
 | Field | Default | Description | 
 |---|---|---|
-| `retries` | `3` | The number of retries | 
-| `delay` | `500` | The delay between each retry attempt in milliseconds. | 
+| `retries` | `3` | The number of retries. Will throw an error if set to a sub-zero value. | 
+| `delay` | `500` | The delay between each retry attempt in milliseconds. Will throw an error if set to a sub-zero value. | 
 | `backoffStrategy` | `BackoffStrategy.Fixed` | The strategy for calculating the delay between retry attempts. | 
 | `addJitter` | `false` | Whether to add random jitter to each retry attempt.  | 
 | `jitterFactor` | `10` | The magnitude of the random jitter to be added to each retry attempt (in milliseconds). | 

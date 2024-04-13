@@ -8,6 +8,9 @@ import { calcDelay } from "./retry.utils";
 export class RetryInterceptor implements HttpInterceptor {
   constructor(@Optional() @Inject(RETRY_INTERCEPTOR_CONFIG) private config: RetryInterceptorConfig) {
     this.config = { ...defaultRetryConfig, ...this.config };
+    if (this.config.retries < 0 || this.config.delay < 0) {
+      throw new Error('Sub zero retries or delay is not allowed');
+    }
   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -19,6 +22,9 @@ export class RetryInterceptor implements HttpInterceptor {
 export const retryInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>, next: HttpHandlerFn) => {
   const injectedConfig = inject(RETRY_INTERCEPTOR_CONFIG, { optional: true});
   const config: RetryInterceptorConfig = { ...defaultRetryConfig, ...injectedConfig };
+  if (config.retries < 0 || config.delay < 0) {
+    throw new Error('Sub zero retries or delay is not allowed');
+  }
 
   return next(req)
     .pipe(retry({ count: config.retries, delay: (error, retryCount) => timer(calcDelay(retryCount, config)) }));
