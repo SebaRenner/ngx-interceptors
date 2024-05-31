@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { HTTP_INTERCEPTORS, HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { LoggingInterceptor } from './logging.interceptor';
 import { LOGGING_INTERCEPTOR_CONFIG, LoggingDateFormat, defaultLoggingConfig } from './logging.config';
 
@@ -10,15 +10,17 @@ describe('LoggingInterceptor', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [
+    imports: [],
+    providers: [
         {
-          provide: HTTP_INTERCEPTORS,
-          useClass: LoggingInterceptor,
-          multi: true
-        }
-      ]
-    });
+            provide: HTTP_INTERCEPTORS,
+            useClass: LoggingInterceptor,
+            multi: true
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+});
     jasmine.clock().install();
   });
 

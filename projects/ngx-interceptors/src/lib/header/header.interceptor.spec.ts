@@ -1,6 +1,6 @@
-import { HTTP_INTERCEPTORS, HttpClient } from "@angular/common/http";
+import { HTTP_INTERCEPTORS, HttpClient, provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import { HeaderInterceptor } from "./header.interceptor";
-import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
+import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { HEADER_INTERCEPTOR_CONFIG, HttpHeader } from "./header.config";
 import { DynamicHeaderService } from "./services/dynamic-header.service";
@@ -17,19 +17,21 @@ describe('HeaderInterceptor', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [
+    imports: [],
+    providers: [
         {
-          provide: HTTP_INTERCEPTORS,
-          useClass: HeaderInterceptor,
-          multi: true
+            provide: HTTP_INTERCEPTORS,
+            useClass: HeaderInterceptor,
+            multi: true
         },
         {
-          provide: DynamicHeaderService,
-          useClass: DynamicHeaderServiceMock
-        }
-      ]
-    });
+            provide: DynamicHeaderService,
+            useClass: DynamicHeaderServiceMock
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+});
   });
 
   afterEach(() => {
