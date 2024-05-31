@@ -1,5 +1,5 @@
-import { HTTP_INTERCEPTORS, HttpClient } from "@angular/common/http";
-import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
+import { HTTP_INTERCEPTORS, HttpClient, provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
+import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { CachingInterceptor } from "./caching.interceptor";
 import { CachingService } from "./services/caching.service";
@@ -12,16 +12,18 @@ describe('CachingInterceptor', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [
+    imports: [],
+    providers: [
         {
-          provide: HTTP_INTERCEPTORS,
-          useClass: CachingInterceptor,
-          multi: true
+            provide: HTTP_INTERCEPTORS,
+            useClass: CachingInterceptor,
+            multi: true
         },
-        CachingService
-      ]
-    });
+        CachingService,
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+});
   });
 
   afterEach(() => {

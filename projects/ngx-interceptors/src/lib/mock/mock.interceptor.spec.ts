@@ -1,5 +1,5 @@
-import { HTTP_INTERCEPTORS, HttpClient, HttpErrorResponse, HttpResponse } from "@angular/common/http";
-import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
+import { HTTP_INTERCEPTORS, HttpClient, HttpErrorResponse, HttpResponse, provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
+import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed, fakeAsync, tick } from "@angular/core/testing";
 import { MockInterceptor } from "./mock.interceptor";
 import { MOCK_INTERCEPTOR_CONFIG, defaultMockConfig } from "./mock.config";
@@ -10,15 +10,17 @@ describe('MockInterceptor', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [
+    imports: [],
+    providers: [
         {
-          provide: HTTP_INTERCEPTORS,
-          useClass: MockInterceptor,
-          multi: true
-        }
-      ]
-    });
+            provide: HTTP_INTERCEPTORS,
+            useClass: MockInterceptor,
+            multi: true
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+});
   });
 
   afterEach(() => {
