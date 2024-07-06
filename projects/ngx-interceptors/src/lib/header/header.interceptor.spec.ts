@@ -31,7 +31,7 @@ describe('HeaderInterceptor', () => {
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
     ]
-});
+    });
   });
 
   afterEach(() => {
@@ -49,7 +49,7 @@ describe('HeaderInterceptor', () => {
     // assert
     const req = httpMock.expectOne('https://example.com');
     expect(req.request.headers.keys()).toEqual([]);
-  })
+  });
 
   it('should add headers to request', () => {
     // arrange
@@ -69,7 +69,7 @@ describe('HeaderInterceptor', () => {
     const header = req.request.headers.get(name);
     expect(header).toBeDefined();
     expect(header).toBe(value);
-  })
+  });
 
   it('should use dynamic headers', () => {
     // arrange
@@ -85,7 +85,7 @@ describe('HeaderInterceptor', () => {
     const header = req.request.headers.get('Dynamic-Header');
     expect(header).toBeDefined();
     expect(header).toBe('dynamic-value');
-  })
+  });
 
   it('should not use dynamic headers', () => {
     // arrange
@@ -100,7 +100,7 @@ describe('HeaderInterceptor', () => {
     const req = httpMock.expectOne('https://example.com');
     const header = req.request.headers.get('Dynamic-Header');
     expect(header).toBeNull();
-  })
+  });
 
   it('should merge static and dynamic headers', () => {
     // arrange
@@ -117,6 +117,28 @@ describe('HeaderInterceptor', () => {
 
     // assert
     const req = httpMock.expectOne('https://example.com');
-    expect(req.request.headers.keys()).toEqual(['Content-Type', 'Dynamic-Header']);
-  })
+    expect(req.request.headers.keys()).toEqual([name, 'Dynamic-Header']);
+  });
+
+  it('should not overwrite existing headers', () => {
+    // arrange
+    const name = 'Content-Type';
+    const value = 'application/json';
+    const headers: HttpHeader = { [name]: value };
+
+    TestBed.overrideProvider(HEADER_INTERCEPTOR_CONFIG, { useValue: { headers: headers, enableDynamicHeaders: true } });
+    httpClient = TestBed.inject(HttpClient);
+    httpMock = TestBed.inject(HttpTestingController);
+
+    // act
+    httpClient.get('https://example.com', {
+      headers: {
+        ['Content-Length']: '1435'
+      }
+    }).subscribe();
+
+    // assert
+    const req = httpMock.expectOne('https://example.com');
+    expect(req.request.headers.keys()).toEqual(['Content-Length', 'Content-Type', 'Dynamic-Header']);
+  });
 });

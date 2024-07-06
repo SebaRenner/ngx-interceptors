@@ -27,7 +27,7 @@ describe('AuthInterceptor', () => {
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
     ]
-});
+    });
   });
 
   afterEach(() => {
@@ -48,7 +48,7 @@ describe('AuthInterceptor', () => {
     expect(authHeader).toBeDefined();
     expect(authHeader).toMatch(/^Bearer /);
     expect(authHeader).toEqual("Bearer defaultToken");
-  })
+  });
 
   it('should use custom header name', () => {
     // arrange
@@ -66,7 +66,7 @@ describe('AuthInterceptor', () => {
     const header = req.request.headers.get(name);
     expect(header).toBeDefined();
     expect(header).toEqual('Bearer defaultToken');
-  })
+  });
 
   it('should not add bearer prefix', () => {
     // arrange
@@ -81,7 +81,7 @@ describe('AuthInterceptor', () => {
     const req = httpMock.expectOne('https://example.com');
     const header = req.request.headers.get(defaultAuthConfig.headerName);
     expect(header).toEqual('defaultToken');
-  })
+  });
 
   it('should use token from provided token service', () => {
     // arrange
@@ -96,5 +96,25 @@ describe('AuthInterceptor', () => {
     const req = httpMock.expectOne('https://example.com');
     const header = req.request.headers.get(defaultAuthConfig.headerName);
     expect(header).toEqual('Bearer mockToken');
-  })
+  });
+
+  it('should not overwrite existing headers', () => {
+    // arrange
+    const name = 'Content-Type';
+    const value = 'application/json';
+
+    httpClient = TestBed.inject(HttpClient);
+    httpMock = TestBed.inject(HttpTestingController);
+
+    // act
+    httpClient.get('https://example.com', {
+      headers: {
+        [name]: value
+      }
+    }).subscribe();
+
+    // assert
+    const req = httpMock.expectOne('https://example.com');
+    expect(req.request.headers.keys()).toEqual(['Content-Type', defaultAuthConfig.headerName]);
+  });
 });
