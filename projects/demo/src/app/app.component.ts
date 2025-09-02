@@ -2,10 +2,9 @@ import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-root',
-  standalone: true,
-  imports: [],
-  template: ''
+    selector: 'app-root',
+    imports: [],
+    template: ''
 })
 export class AppComponent {
   constructor(http: HttpClient) {
