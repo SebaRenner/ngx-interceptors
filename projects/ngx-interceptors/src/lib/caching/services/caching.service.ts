@@ -73,7 +73,9 @@ export class CachingService {
         throw new Error('Cache of CachingInterceptor is full. You can manually clear it or use an eviction policy');
       case CacheEvictionPolicy.FIFO:
         const firstEntry = this._cache.keys().next().value;
-        this._cache.delete(firstEntry);
+        if (firstEntry) {
+          this._cache.delete(firstEntry);
+        }
         break;
       case CacheEvictionPolicy.LFU:
         const lfuSortedCache = Array.from(this._cache.entries()).sort((a, b) => {
