@@ -19,8 +19,8 @@
     "name": "Sebastian Renner"
   },
   "peerDependencies": {
-    "@angular/common": "^18.0.1",
-    "@angular/core": "^18.0.1"
+    "@angular/common": "^20.2.3",
+    "@angular/core": "^20.2.3"
   },
   "dependencies": {
     "tslib": "^2.3.0"
